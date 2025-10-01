@@ -83,21 +83,33 @@ export const ClashList: React.FC = () => {
 
 ### Create App Navigation Component
 
-Create a navigation component to handle routing between pages:
+Create a navigation component to handle routing between pages with active link styling:
 
 `src/components/app-navbar/app-navbar.tsx`:
 
 ```tsx
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export const AppNavbar: React.FC = () => {
+  const pathname = usePathname();
+
+  const linkClass = (href: string) =>
+    cn(
+      'px-3 py-2 rounded transition-colors',
+      pathname === href ? 'bg-gray-700 text-white' : 'hover:bg-gray-700',
+    );
+
   return (
     <nav className="bg-gray-800 text-white p-4">
       <div className="container mx-auto flex gap-4">
-        <Link href="/clashes" className="hover:bg-gray-700 px-3 py-2 rounded transition-colors">
+        <Link href="/clashes" className={linkClass('/clashes')}>
           Clashes
         </Link>
-        <Link href="/peers" className="hover:bg-gray-700 px-3 py-2 rounded transition-colors">
+        <Link href="/peers" className={linkClass('/peers')}>
           Peers
         </Link>
       </div>
@@ -208,43 +220,14 @@ export default function PeersPage() {
 
 ## Navigation Features
 
-### Active Link Styling
+The AppNavbar component includes active link styling using [usePathname](https://nextjs.org/docs/app/api-reference/functions/use-pathname):
 
-Consider implementing active link styling using [usePathname](https://nextjs.org/docs/app/api-reference/functions/use-pathname):
-
-```tsx
-'use client';
-
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-
-export const AppNavbar: React.FC = () => {
-  const pathname = usePathname();
-
-  const linkClass = (href: string) =>
-    cn(
-      'px-3 py-2 rounded transition-colors',
-      pathname === href ? 'bg-gray-700 text-white' : 'hover:bg-gray-700',
-    );
-
-  return (
-    <nav className="bg-gray-800 text-white p-4">
-      <div className="container mx-auto flex gap-4">
-        <Link href="/clashes" className={linkClass('/clashes')}>
-          Clashes
-        </Link>
-        <Link href="/peers" className={linkClass('/peers')}>
-          Peers
-        </Link>
-      </div>
-    </nav>
-  );
-};
-```
+- **Active State**: Links show `bg-gray-700 text-white` when the current route matches
+- **Hover State**: Links show `hover:bg-gray-700` when not active
+- **Client Component**: Uses `'use client'` directive to enable client-side navigation hooks
 
 > [!TIP]
-> Learn more about [usePathname](https://nextjs.org/docs/app/api-reference/functions/use-pathname) and client-side navigation hooks.
+> Learn more about [usePathname](https://nextjs.org/docs/app/api-reference/functions/use-pathname) and client-side navigation hooks in the Next.js documentation.
 
 ## Testing Navigation
 
